@@ -1,0 +1,11 @@
+fastapi
+transformers[torch]
+pdf2image
+opencv-python
+faiss-cpu
+numpy
+paddlepaddle==3.1.0
+paddleocr
+pydantic
+uvicorn
+ultralytics

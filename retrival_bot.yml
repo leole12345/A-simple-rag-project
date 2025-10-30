@@ -1,0 +1,371 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: retrival_bot
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.6@dd589dc093c8084925858034ab5ec1fdf0d33819f43226c2f8c4a749a9acbbb2
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: llm-source-answer-target
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1751964508062-source-1751965074609-target
+      source: '1751964508062'
+      sourceHandle: source
+      target: '1751965074609'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: tool
+      id: 1751965074609-source-1752474302791-target
+      source: '1751965074609'
+      sourceHandle: source
+      target: '1752474302791'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: llm
+      id: 1752474302791-source-llm-target
+      source: '1752474302791'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables: []
+      height: 53
+      id: '1751964508062'
+      position:
+        x: -334.32548398268864
+        y: 318.94622150164093
+      positionAbsolute:
+        x: -334.32548398268864
+        y: 318.94622150164093
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/deepseek/deepseek
+        prompt_config:
+          jinja2_variables:
+          - value_selector:
+            - sys
+            - query
+            variable: query
+        prompt_template:
+        - edition_type: basic
+          id: c2a728d4-9194-4ba9-b7a7-c21e72d422ab
+          jinja2_text: "请根据以上资料，回答用户的问题：  \r\n{{ query }}"
+          role: system
+          text: "\n{{#1752474302791.text#}}\n\n\n请根据以上资料，回答用户的问题：  \n{{#sys.query#}}\n\
+            同时返回图片的url\n\n⚠️ 提示：以上资料中未直接提及该问题，请结合常识和背景推测回答，并注明该结论并非资料明确说明。\n\n请最后列出参考的页码作为参考文献。\n\
+            \n"
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: llm
+      position:
+        x: 672.9617642921576
+        y: 318.94622150164093
+      positionAbsolute:
+        x: 672.9617642921576
+        y: 318.94622150164093
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#llm.text#}}'
+        desc: ''
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 104
+      id: answer
+      position:
+        x: 1003.1070419600567
+        y: 309.85192210257856
+      positionAbsolute:
+        x: 1003.1070419600567
+        y: 309.85192210257856
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: b16a0219-0c32-4857-98ef-322ebf7b5c81
+          role: system
+          text: '你是一个检索助手，请从下面这个用户问题中提取出用于检索的关键词或短语。
+
+
+            要求输出简洁、清晰的关键词，建议3-10个，以便进行语义检索。
+
+
+            用户问题：{{{#sys.query#}}}
+
+
+            输出格式：
+
+            - xxx
+
+            - xxx
+
+            - xxx
+
+            '
+        selected: false
+        structured_output_enabled: false
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: '1751965074609'
+      position:
+        x: 26.877638832472794
+        y: 318.94622150164093
+      positionAbsolute:
+        x: 26.877638832472794
+        y: 318.94622150164093
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        author: jiayi
+        desc: ''
+        height: 88
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"Query
+          Rewriting","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: blue
+        title: ''
+        type: ''
+        width: 240
+      height: 88
+      id: '1751965183936'
+      position:
+        x: 26.877638832472794
+        y: 426.92497045460914
+      positionAbsolute:
+        x: 26.877638832472794
+        y: 426.92497045460914
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 240
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+            ja_JP: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+            pt_BR: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+            zh_Hans: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+          label:
+            en_US: query
+            ja_JP: query
+            pt_BR: query
+            zh_Hans: query
+          llm_description: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+          max: null
+          min: null
+          name: query
+          options: []
+          placeholder:
+            en_US: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+            ja_JP: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+            pt_BR: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+            zh_Hans: 用户提出的问题，将被用于生成 embedding 并在 FAISS 向量库中检索
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 3
+          form: llm
+          human_description:
+            en_US: 返回的最相关 chunk 数量（默认 3）
+            ja_JP: 返回的最相关 chunk 数量（默认 3）
+            pt_BR: 返回的最相关 chunk 数量（默认 3）
+            zh_Hans: 返回的最相关 chunk 数量（默认 3）
+          label:
+            en_US: top_k
+            ja_JP: top_k
+            pt_BR: top_k
+            zh_Hans: top_k
+          llm_description: 返回的最相关 chunk 数量（默认 3）
+          max: null
+          min: null
+          name: top_k
+          options: []
+          placeholder:
+            en_US: 返回的最相关 chunk 数量（默认 3）
+            ja_JP: 返回的最相关 chunk 数量（默认 3）
+            pt_BR: 返回的最相关 chunk 数量（默认 3）
+            zh_Hans: 返回的最相关 chunk 数量（默认 3）
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        params:
+          query: ''
+          top_k: ''
+        provider_id: 41209c5d-a634-4443-b01f-39eae9bd59b6
+        provider_name: retrieval_tool
+        provider_type: api
+        selected: false
+        title: retrieveRelevantChunks
+        tool_configurations: {}
+        tool_description: 根据用户的问题检索主角生平中相关的文本片段。
+        tool_label: retrieveRelevantChunks
+        tool_name: retrieveRelevantChunks
+        tool_parameters:
+          query:
+            type: mixed
+            value: '{{#1751965074609.text#}}'
+          top_k:
+            type: constant
+            value: 3
+        type: tool
+      height: 53
+      id: '1752474302791'
+      position:
+        x: 345.17191528840914
+        y: 318.94622150164093
+      positionAbsolute:
+        x: 345.17191528840914
+        y: 318.94622150164093
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 360.236811026399
+      y: 171.81305889499748
+      zoom: 0.5000000000000011
