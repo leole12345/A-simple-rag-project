@@ -8,15 +8,16 @@ pdf文档放入Library/bin
 
 依次运行
 
-pdf2image.ipynb  
+pdf2image.py 
 
-yolo_prediction.py
+extract.py
 
-retrival.ipynb
+retrivalpy.py
 
 server.py
 
 利用dify、coze等平台本地搭建agent（导入文件夹中的retrival_bot.yml）
+
 
 
 
